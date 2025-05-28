@@ -59,7 +59,7 @@ export CFLAGS="%{optflags} -fno-strict-aliasing"
 %if %{with tests}
 %check
 pip install -e .[test]
-%{__python} -m pytest -v tests
+%{__python} -m pytest --import-mode append -v tests
 %endif
 
 %files
