@@ -13,8 +13,10 @@ Summary:	Modern password hashing for your software and your servers
 Name:		python-bcrypt
 Version:	4.3.0
 Release:	1
-#crypt_blowfish code is in Public domain and all other code in ASL 2.0
-License:	ASL 2.0 and Public Domain and BSD
+# crypt_blowfish code is in Public domain and all other code in Apache 2.0,
+# rust vendor crates mixture of Apache-2.0, MIT, Unlicence -
+# see generated LICENSE.dependencies in built rpm for full list.
+License:	Apache-2.0 AND Public Domain AND BSD-3-Clause AND MIT AND (Apache-2.0 OR MIT) AND (Unlicense OR MIT)
 Group:		Development/Python
 URL:		https://github.com/pyca/bcrypt
 Source0:	https://pypi.python.org/packages/source/b/%{oname}/%{oname}-%{version}.tar.gz
@@ -31,6 +33,7 @@ BuildRequires:	cargo
 BuildRequires:	rust-packaging
 %if %{with tests}
 BuildRequires:	python%{pyver}dist(pytest)
+BuildRequires:	python%{pyver}dist(tox)
 %endif
 
 %description
@@ -49,9 +52,17 @@ directory = "vendor"
 
 EOF
 
+# remove remote url github badge clutter from README.rst
+sed -i '4,9d;' README.rst
+
 %build
 export CFLAGS="%{optflags} -fno-strict-aliasing"
 %py_build
+
+cd src/_bcrypt
+%cargo_license_summary
+%{cargo_license} > ../../LICENSE.dependencies
+
 
 %install
 %py_install
@@ -59,12 +70,12 @@ export CFLAGS="%{optflags} -fno-strict-aliasing"
 %if %{with tests}
 %check
 export PYTHONPATH="%{buildroot}%{python_sitelib}:${PWD}"
-pip install -e .[test]
-%{__python} -m pytest --import-mode append -v tests
+pip install -e .
+%{__python} -m pytest -vvv -nauto tests/
 %endif
 
 %files
-%license LICENSE
+%license LICENSE LICENSE.dependencies
 %doc README.rst
 %{python_sitearch}/%{module}/
 %{python_sitearch}/%{module}-%{version}*-info
