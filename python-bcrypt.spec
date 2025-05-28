@@ -58,6 +58,7 @@ export CFLAGS="%{optflags} -fno-strict-aliasing"
 
 %if %{with tests}
 %check
+export PYTHONPATH="%{buildroot}%{python_sitelib}:${PWD}"
 pip install -e .[test]
 %{__python} -m pytest --import-mode append -v tests
 %endif
