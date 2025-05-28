@@ -2,8 +2,8 @@
 %global module bcrypt
 %define oname bcrypt
 
-# building with tests enabled
-%bcond_without tests
+# disable tests for abf, complete successfully locally
+%bcond_with tests
 
 # NOTE To update also run create_vendored_crate_archive.sh to create a vendor
 # NOTE archive of the rust crates and update the Source1: line and _abf.yml file
