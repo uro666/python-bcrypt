@@ -33,7 +33,6 @@ BuildRequires:	cargo
 BuildRequires:	rust-packaging
 %if %{with tests}
 BuildRequires:	python%{pyver}dist(pytest)
-BuildRequires:	python%{pyver}dist(tox)
 %endif
 
 %description
